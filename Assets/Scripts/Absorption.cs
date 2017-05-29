@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 public class Absorption : MonoBehaviour {
 
@@ -8,19 +10,71 @@ public class Absorption : MonoBehaviour {
 
     Rigidbody2D rb;
     CircleCollider2D cc;
+    SpriteRenderer sr;
+    SettingsManager sm;
+    EventManager em;
+    GameObject player;
+
+    bool isPlayer;
+
+
 
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
         cc = GetComponent<CircleCollider2D>();
+        sr = GetComponent<SpriteRenderer>();
+        sm = FindObjectOfType<SettingsManager>();
+        em = FindObjectOfType<EventManager>();
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        isPlayer = GetComponent<PlayerMovement>() != null;
+
+        // event handling
+        em.AreaChanged += OnAreaChanged;
 	}
 	
 	void Update () {
 		
 	}
 
+    public void OnAreaChanged(Absorption a)
+    {
+        if (!isPlayer) sr.color = a.Area() > Area() ? sm.absorbableColor : sm.unabsorbableColor;
+    }
+
+    public Absorption Create(Vector2 pos, float rotation, float area)
+    {
+        var a = Instantiate(this, pos, Quaternion.Euler(Vector3.forward * rotation));
+        OnAreaChanged(player.GetComponent<Absorption>());
+        return a;
+    }
+
+
+    public void Slice(Vector2 leftPos, float leftRotation, Vector2 rightPos, float rightRotation, float ratio = 0.5f)
+    {
+        var a = Area();
+        var leftArea = a * ratio;
+        var rightArea = a - leftArea;
+
+        Destroy(gameObject);
+        if (isPlayer) OnAreaChanged(this);
+
+        Create(leftPos, leftRotation, leftArea);
+        Create(rightPos, rightRotation, rightArea);
+    }
+
+
+    public List<Absorption> Explode(int parts, float force)
+    {
+        var a = Area();
+        return Enumerable.Range(1, parts).Select((int _) => Create(transform.position, transform.rotation.z, (a / parts) / a)).ToList();
+    }
+
+
     public void Scale(float newArea)
     {
         transform.localScale = transform.localScale * (newArea / Area());
+        if (isPlayer) OnAreaChanged(this);
     }
 
     public void DestroyTiny()

@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class SettingsManager : MonoBehaviour {
 
-	// Use this for initialization
+    public Color absorbableColor = Color.blue;
+    public Color unabsorbableColor = Color.red;
+
+
 	void Start () {
 		
 	}
 	
-	// Update is called once per frame
 	void Update () {
 		
 	}

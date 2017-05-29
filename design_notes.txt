@@ -1,0 +1,9 @@
+- gravitational bomb to remotely active switches
+- sawblades to slice enemies in half
+- different enemy types:
+	- follower: follows player when proximity threshold is undercut
+- narrow alleys limit player movement and require a certain strategy to complete the level
+- switches that require a certain weight/area to activate
+	- can open doors
+	- active traps
+- patrolling behavior of enemies 
