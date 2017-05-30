@@ -9,4 +9,12 @@ public static class Rigidbody2DExt {
         var dir = body.transform.position - origin;
         body.AddForce(dir.normalized * (1 - (dir.magnitude / radius)) * force);
     }
+
+    public static void ApplyRelativeForce(this Rigidbody2D from, Vector3 to, float force, float maxDistance, float deltaTime = 1, bool inverted = false)
+    {
+        var dir = to - from.transform.position;
+        var p = dir.magnitude / maxDistance;
+        var intensity = inverted ? p : 1 - p;
+        from.AddForce(dir.normalized * p * force * deltaTime);
+    }
 }

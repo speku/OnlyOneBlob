@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Explosion : MonoBehaviour {
 
@@ -11,22 +12,13 @@ public class Explosion : MonoBehaviour {
     public float passThrough = 0.3f;
     public LayerMask affected;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void Explode()
     {
-        foreach (var c in Physics.OverlapSphere(transform.position, radius, affected))
-        {
-            var a = c.GetComponent<Absorption>();
-            if (a != null) a.Explode(parts, force, passThrough).ForEach(ab => ab.rb.AddExplosionForce(force, transform.position, radius));
-        }
+        Physics.OverlapSphere(transform.position, radius, affected).
+            Where(c => Util.LineOfSight(gameObject, c.gameObject) && c.GetComponent<Absorption>() != null && c.GetComponent<Rigidbody2D>() != null).
+            SelectMany(c => c.GetComponent<Absorption>().Explode(parts, passThrough)).
+            Select(a => a.GetComponent<Rigidbody2D>()).ToList().
+            ForEach(r => r.AddExplosionForce(force, transform.position, radius));
     }
 }

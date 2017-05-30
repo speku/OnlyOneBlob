@@ -8,8 +8,7 @@ public class Absorption : MonoBehaviour {
 
     public float tinyScale = 0.01f;
 
-    [HideInInspector]
-    public Rigidbody2D rb;
+    Rigidbody2D rb;
     CircleCollider2D cc;
     SpriteRenderer sr;
     SettingsManager sm;
@@ -68,7 +67,7 @@ public class Absorption : MonoBehaviour {
     }
 
 
-    public List<Absorption> Explode(int parts, float force, float passThroughDuration)
+    public List<Absorption> Explode(int parts, float passThroughDuration)
     {
         var a = Area();
         Util.Delay(() => Physics.IgnoreLayerCollision(lm, lm, true), passThroughDuration, () => Physics.IgnoreLayerCollision(lm, lm, false));
