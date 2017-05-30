@@ -8,12 +8,14 @@ public class Absorption : MonoBehaviour {
 
     public float tinyScale = 0.01f;
 
-    Rigidbody2D rb;
+    [HideInInspector]
+    public Rigidbody2D rb;
     CircleCollider2D cc;
     SpriteRenderer sr;
     SettingsManager sm;
     EventManager em;
     GameObject player;
+    LayerMask lm;
 
     bool isPlayer;
 
@@ -25,8 +27,10 @@ public class Absorption : MonoBehaviour {
         sr = GetComponent<SpriteRenderer>();
         sm = FindObjectOfType<SettingsManager>();
         em = FindObjectOfType<EventManager>();
+        lm = LayerMask.NameToLayer("Absorption");
         player = GameObject.FindGameObjectWithTag("Player");
 
+        
         isPlayer = GetComponent<PlayerMovement>() != null;
 
         // event handling
@@ -64,11 +68,13 @@ public class Absorption : MonoBehaviour {
     }
 
 
-    public List<Absorption> Explode(int parts, float force)
+    public List<Absorption> Explode(int parts, float force, float passThroughDuration)
     {
         var a = Area();
+        Util.Delay(() => Physics.IgnoreLayerCollision(lm, lm, true), passThroughDuration, () => Physics.IgnoreLayerCollision(lm, lm, false));
         return Enumerable.Range(1, parts).Select((int _) => Create(transform.position, transform.rotation.z, (a / parts) / a)).ToList();
     }
+
 
 
     public void Scale(float newArea)

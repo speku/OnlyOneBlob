@@ -1,16 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class Util : MonoBehaviour {
+public static class Util {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    static SettingsManager sm;
+
+    static Util()
+    {
+        sm = GameObject.FindObjectOfType<SettingsManager>();
+    }
+
+    public static void Delay(Action start, float delay, Action finish = null)
+    {
+        sm.StartCoroutine(Execute(start, delay, finish));
+    }
+
+    public static IEnumerator Execute(Action start, float delay, Action finish = null)
+    {
+        start();
+        yield return new WaitForSeconds(delay);
+        if (finish != null) finish();
+    }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
