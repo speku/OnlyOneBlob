@@ -50,4 +50,14 @@ public static class Util {
     {
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(layer1), LayerMask.NameToLayer(layer2), true);
     }
+
+    public static void Fade(SpriteRenderer sr, float speed)
+    {
+        While(() => Alpha(sr, sr.color.a - speed * Time.deltaTime), () => sr.color.a > 0, 0.05f);
+    }
+
+    public static void Alpha(SpriteRenderer sr, float alpha)
+    {
+        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, alpha);
+    }
 }

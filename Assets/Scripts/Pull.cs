@@ -29,11 +29,4 @@ public class Pull : MonoBehaviour {
                     ForEach(r => r.ApplyRelativeForce(transform.position, force, r.GetComponent<SpriteRenderer>().bounds.size.x, Time.deltaTime));
         }
     }
-
-    
-
-    public void ShowCone()
-    {
-
-    }
 }
