@@ -11,8 +11,9 @@ public class SettingsManager : MonoBehaviour {
 	void Start () {
 		
 	}
-	
-	void Update () {
-		
-	}
+
+    void Update()
+    {
+
+    }
 }

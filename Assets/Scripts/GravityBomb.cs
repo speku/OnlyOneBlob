@@ -16,7 +16,7 @@ public class GravityBomb : MonoBehaviour {
         var start = Time.time;
         Util.While(() =>
         {
-            Physics.OverlapSphere(transform.position, radius, affected).Where(c => Util.LineOfSight(gameObject, c.gameObject) && c.GetComponent<Rigidbody2D>() != null).ToList().ForEach(c =>
+            Physics2D.OverlapCircleAll(transform.position, radius, affected).Where(c => Util.LineOfSight(gameObject, c.gameObject) && c.GetComponent<Rigidbody2D>() != null).ToList().ForEach(c =>
             {
                 var dir = transform.position - c.transform.position;
                 var intensity = 1 - (dir.magnitude / radius);

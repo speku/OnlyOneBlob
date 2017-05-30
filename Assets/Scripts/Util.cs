@@ -7,6 +7,8 @@ public static class Util {
 
     static SettingsManager sm;
 
+    static ContactFilter2D filterLineOfSight;
+
     static Util()
     {
         sm = GameObject.FindObjectOfType<SettingsManager>();
@@ -41,7 +43,11 @@ public static class Util {
 
     public static bool LineOfSight(GameObject start, GameObject end)
     {
-        RaycastHit hit;
-        return !Physics.Linecast(start.transform.position, end.transform.position, out hit) || hit.collider.gameObject == end;
+        return Physics2D.Linecast(start.transform.position, end.transform.position, LayerMask.NameToLayer("Obstacle")).collider == null;
+    }
+
+    public static void IgnoreCollisions(string layer1, string layer2)
+    {
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(layer1), LayerMask.NameToLayer(layer2), true);
     }
 }

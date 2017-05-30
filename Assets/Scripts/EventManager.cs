@@ -8,6 +8,11 @@ public class EventManager : MonoBehaviour {
 
     public event Action<Absorption> AreaChanged = delegate { };
 
+    public void RaiseAreaChanged(Absorption a)
+    {
+        AreaChanged(a);
+    }
+
     void Start () {
 		
 	}

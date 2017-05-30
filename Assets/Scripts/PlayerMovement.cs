@@ -9,9 +9,14 @@ public class PlayerMovement : MonoBehaviour {
 
     private Rigidbody2D rb;
 
-	void Start () {
+    private void Awake()
+    {
         rb = GetComponent<Rigidbody2D>();
         tag = "Player";
+    }
+
+    void Start () {
+        
 	}
 	
 	void Update () {

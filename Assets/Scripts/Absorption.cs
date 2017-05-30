@@ -7,6 +7,7 @@ using System.Linq;
 public class Absorption : MonoBehaviour {
 
     public float tinyScale = 0.01f;
+    public float absorbPercentage = 1;
 
     Rigidbody2D rb;
     CircleCollider2D cc;
@@ -18,22 +19,24 @@ public class Absorption : MonoBehaviour {
 
     bool isPlayer;
 
-
-
-	void Start () {
+    private void Awake()
+    {
         rb = GetComponent<Rigidbody2D>();
         cc = GetComponent<CircleCollider2D>();
         sr = GetComponent<SpriteRenderer>();
+        lm = LayerMask.NameToLayer("Absorption");
+        isPlayer = GetComponent<PlayerMovement>() != null;
+    }
+
+
+    void Start () {
         sm = FindObjectOfType<SettingsManager>();
         em = FindObjectOfType<EventManager>();
-        lm = LayerMask.NameToLayer("Absorption");
         player = GameObject.FindGameObjectWithTag("Player");
-
-        
-        isPlayer = GetComponent<PlayerMovement>() != null;
 
         // event handling
         em.AreaChanged += OnAreaChanged;
+        OnAreaChanged(player.GetComponent<Absorption>());
 	}
 	
 	void Update () {
@@ -44,6 +47,7 @@ public class Absorption : MonoBehaviour {
     {
         if (!isPlayer) sr.color = a.Area() > Area() ? sm.absorbableColor : sm.unabsorbableColor;
     }
+
 
     public Absorption Create(Vector2 pos, float rotation, float area)
     {
@@ -70,7 +74,7 @@ public class Absorption : MonoBehaviour {
     public List<Absorption> Explode(int parts, float passThroughDuration)
     {
         var a = Area();
-        Util.Delay(() => Physics.IgnoreLayerCollision(lm, lm, true), passThroughDuration, () => Physics.IgnoreLayerCollision(lm, lm, false));
+        Util.Delay(() => Physics2D.IgnoreLayerCollision(lm, lm, true), passThroughDuration, () => Physics.IgnoreLayerCollision(lm, lm, false));
         return Enumerable.Range(1, parts).Select((int _) => Create(transform.position, transform.rotation.z, (a / parts) / a)).ToList();
     }
 
@@ -79,12 +83,17 @@ public class Absorption : MonoBehaviour {
     public void Scale(float newArea)
     {
         transform.localScale = transform.localScale * (newArea / Area());
-        if (isPlayer) OnAreaChanged(this);
+        if (isPlayer) em.RaiseAreaChanged(this);
     }
 
     public void DestroyTiny()
     {
         if (transform.localScale.x < tinyScale) Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        em.AreaChanged -= OnAreaChanged;
     }
 
     public void Absorb(Absorption other, float percentage)
@@ -101,13 +110,13 @@ public class Absorption : MonoBehaviour {
 
     public float Area()
     {
-        
-        return Mathf.Pow(cc.radius, 2) * Mathf.PI;
+        return Mathf.Pow(cc.bounds.extents.x, 2) * Mathf.PI;
     }
 
     void OnCollisionEnter2D(Collision2D c)
     {
-        var absorption = c.gameObject.GetComponent<Absorption>();
-        if (absorption == null) return; 
+        var a = c.gameObject.GetComponent<Absorption>();
+        if (a == null) return;
+        Absorb(a, absorbPercentage);
     }
 }
