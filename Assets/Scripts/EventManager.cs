@@ -6,11 +6,11 @@ using System;
 public class EventManager : MonoBehaviour {
 
 
-    public event Action<Absorption> AreaChanged = delegate { };
+    public event Action AreaChanged;
 
-    public void RaiseAreaChanged(Absorption a)
+    public void RaiseAreaChanged()
     {
-        AreaChanged(a);
+        if (AreaChanged != null) AreaChanged();
     }
 
     void Start () {

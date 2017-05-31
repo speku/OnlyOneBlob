@@ -22,27 +22,29 @@ public static class Util {
 
     private static IEnumerator _Delay(Action start, float delay, Action finish = null)
     {
-        start();
+        if (start != null) start();
         yield return new WaitForSeconds(delay);
         if (finish != null) finish();
     }
 
-    public static void While(Action action, Func<bool> predicate, float delay)
+    public static void While(Func<bool> predicate, Action action, float delay, Action finish = null)
     {
-        sm.StartCoroutine(_While(action, predicate, delay));
+        sm.StartCoroutine(_While(predicate, action, delay, finish));
     }
 
-    private static IEnumerator _While(Action action, Func<bool> predicate, float delay)
+    private static IEnumerator _While(Func<bool> predicate, Action action, float delay, Action finish)
     {
         while (predicate())
         {
             action();
             yield return new WaitForSeconds(delay);
         }
+        if (finish != null) finish();
     }
 
     public static bool LineOfSight(GameObject start, GameObject end)
     {
+        if (start == null || end == null) return false;
         return Physics2D.Linecast(start.transform.position, end.transform.position, LayerMask.NameToLayer("Obstacle")).collider == null;
     }
 
@@ -53,7 +55,8 @@ public static class Util {
 
     public static void Fade(SpriteRenderer sr, float speed)
     {
-        While(() => Alpha(sr, sr.color.a - speed * Time.deltaTime), () => sr.color.a > 0, 0.05f);
+        if (sr == null) return;
+        While(() => sr.color.a > 0, () => Alpha(sr, sr.color.a - speed * Time.deltaTime), 0.05f);
     }
 
     public static void Alpha(SpriteRenderer sr, float alpha)

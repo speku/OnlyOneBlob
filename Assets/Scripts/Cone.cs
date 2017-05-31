@@ -10,6 +10,7 @@ public class Cone : MonoBehaviour {
     public LayerMask affected;
     public List<SpriteRenderer> landingStrip = new List<SpriteRenderer>();
     public List<GameObject> affectedObjects = new List<GameObject>();
+    Mouse mousePointer;
 
 
     private bool animating = false;
@@ -17,6 +18,12 @@ public class Cone : MonoBehaviour {
     private void Start()
     {
         Show(false);
+        mousePointer = FindObjectOfType<Mouse>();
+    }
+
+    private void Update()
+    {
+        LookAtMousePointer();
     }
 
     private void OnTriggerEnter2D(Collider2D c)
@@ -24,6 +31,12 @@ public class Cone : MonoBehaviour {
         if (c.gameObject.GetComponent<Rigidbody2D>() != null &&
             c.gameObject.GetComponent<SpriteRenderer>() != null) affectedObjects.Add(c.gameObject);
 
+    }
+
+
+    void LookAtMousePointer()
+    {
+        if (animating) transform.rotation = Quaternion.LookRotation(Vector3.forward, mousePointer.transform.position - transform.position);
     }
 
 

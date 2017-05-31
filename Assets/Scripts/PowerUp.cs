@@ -75,7 +75,6 @@ public class PowerUp : MonoBehaviour {
             case Type.GravityBomb | Type.Explosion:
                 break;
             case Type.Pull:
-                player.cone.Show(true);
                 break;
         }
         symbol.color = selectedColor;
@@ -88,7 +87,6 @@ public class PowerUp : MonoBehaviour {
             case Type.GravityBomb | Type.Explosion:
                 break;
             case Type.Pull:
-                player.cone.Show(false);
                 break;
         }
         symbol.color = unselectedColor;
@@ -98,7 +96,14 @@ public class PowerUp : MonoBehaviour {
     {
         switch (type)
         {
-            case Type.GravityBomb | Type.Explosion:
+            case Type.GravityBomb:
+                Instantiate(GetComponent<GravityBomb>(), mousePointer.transform.position, Quaternion.identity).Arm();
+                break;
+            case Type.Explosion:
+                 Instantiate(GetComponent<Explosion>(), mousePointer.transform.position, Quaternion.identity).Arm();
+                break;
+            case Type.Pull:
+                player.cone.Show(true);
                 break;
 
         }

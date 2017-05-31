@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour {
     public Transform gravityBombPosition;
     public Transform pullPosition;
     public Transform explosionPosition;
+    public float propulsion = 10;
+    Mouse mousePointer;
 
     PowerUp.Type powerUp = PowerUp.Type.None;
     [HideInInspector]
@@ -30,12 +32,13 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void Start () {
-        
+        mousePointer = FindObjectOfType<Mouse>();
 	}
 	
 	void Update () {
         rb.AddForce(Input.GetAxis("Vertical") * transform.up * forwardSpeed * Time.deltaTime, ForceMode2D.Force);
         transform.Rotate(Vector3.back * Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime);
+        if (Input.GetMouseButton(0)) Propel();
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
             Equip(PowerUp.Type.Pull);
         } else if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -49,13 +52,36 @@ public class PlayerMovement : MonoBehaviour {
         switch (powerUp)
         {
             case PowerUp.Type.Pull:
-                if (Input.GetMouseButton(1)) pull.PullIn();
+                if (Input.GetMouseButtonDown(1))
+                {
+                    cone.Show(true);
+                } else if (Input.GetMouseButton(1)) {
+                    pull.PullIn();
+                        } else if (Input.GetMouseButtonUp(1))
+                {
+                    cone.Show(false);
+                }
                 break;
-            case PowerUp.Type.Explosion | PowerUp.Type.GravityBomb:
-                explosion.GetComponent<PowerUp>().Place();
+            case PowerUp.Type.Explosion:
+                if (Input.GetMouseButtonDown(1))
+                {
+                    explosion.GetComponent<PowerUp>().Place();
+                }
+                break;
+            case PowerUp.Type.GravityBomb:
+                if (Input.GetMouseButtonDown(1))
+                {
+                    gravity.GetComponent<PowerUp>().Place();
+                }
                 break;
         }
 
+    }
+
+    void Propel()
+    {
+        var dir = (mousePointer.transform.position - transform.position).normalized;
+        rb.AddForce(dir * propulsion * Time.deltaTime, ForceMode2D.Force);
     }
 
     void Equip(PowerUp.Type type)

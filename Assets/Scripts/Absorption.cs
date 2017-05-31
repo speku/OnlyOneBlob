@@ -36,23 +36,24 @@ public class Absorption : MonoBehaviour {
 
         // event handling
         em.AreaChanged += OnAreaChanged;
-        OnAreaChanged(player.GetComponent<Absorption>());
+        OnAreaChanged();
 	}
 	
 	void Update () {
 		
 	}
 
-    public void OnAreaChanged(Absorption a)
+    public void OnAreaChanged()
     {
-        if (!isPlayer) sr.color = a.Area() > Area() ? sm.absorbableColor : sm.unabsorbableColor;
+        if (sr == null) return;
+        if (!isPlayer) sr.color = player.GetComponent<Absorption>().Area() > Area() ? sm.absorbableColor : sm.unabsorbableColor;
     }
 
 
     public Absorption Create(Vector2 pos, float rotation, float area)
     {
         var a = Instantiate(this, pos, Quaternion.Euler(Vector3.forward * rotation));
-        OnAreaChanged(player.GetComponent<Absorption>());
+        a.Scale(area);
         return a;
     }
 
@@ -64,7 +65,7 @@ public class Absorption : MonoBehaviour {
         var rightArea = a - leftArea;
 
         Destroy(gameObject);
-        if (isPlayer) OnAreaChanged(this);
+        if (isPlayer) OnAreaChanged();
 
         Create(leftPos, leftRotation, leftArea);
         Create(rightPos, rightRotation, rightArea);
@@ -75,7 +76,9 @@ public class Absorption : MonoBehaviour {
     {
         var a = Area();
         Util.Delay(() => Physics2D.IgnoreLayerCollision(lm, lm, true), passThroughDuration, () => Physics.IgnoreLayerCollision(lm, lm, false));
-        return Enumerable.Range(1, parts).Select((int _) => Create(transform.position, transform.rotation.z, (a / parts) / a)).ToList();
+        var newParts = Enumerable.Range(1, parts).Select((int _) => Create(transform.position, transform.rotation.z, a / parts)).ToList();
+        DestroyProper();
+        return newParts;
     }
 
 
@@ -83,7 +86,13 @@ public class Absorption : MonoBehaviour {
     public void Scale(float newArea)
     {
         transform.localScale = transform.localScale * (newArea / Area());
-        if (isPlayer) em.RaiseAreaChanged(this);
+        if (isPlayer)
+        {
+            em.RaiseAreaChanged();
+        } else
+        {
+            OnAreaChanged();
+        }
     }
 
     public void DestroyTiny()
@@ -91,14 +100,20 @@ public class Absorption : MonoBehaviour {
         if (transform.localScale.x < tinyScale) Destroy(gameObject);
     }
 
-    private void OnDestroy()
+    private void DestroyProper()
     {
         em.AreaChanged -= OnAreaChanged;
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        //em.AreaChanged -= OnAreaChanged;
     }
 
     public void Absorb(Absorption other, float percentage)
     {
-        if (!(Area() > other.Area())) return;
+        if (!(Area() >= other.Area())) return;
         
         var otherNewArea = other.Area() * (1 - percentage);
         var myNewArea = Area() + other.Area() * percentage;
@@ -106,10 +121,12 @@ public class Absorption : MonoBehaviour {
         Scale(myNewArea);
         other.Scale(otherNewArea);
         other.DestroyTiny();
+        DestroyTiny();
     }
 
     public float Area()
     {
+        if (cc == null) return 0;
         return Mathf.Pow(cc.bounds.extents.x, 2) * Mathf.PI;
     }
 

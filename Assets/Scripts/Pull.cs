@@ -5,10 +5,11 @@ using System.Linq;
 
 public class Pull : MonoBehaviour {
 
+    [HideInInspector]
     public Cone cone;
+    [HideInInspector]
     public PlayerMovement player;
     public float force = 10;
-
     [HideInInspector]
     bool Active { get; set; }
 
