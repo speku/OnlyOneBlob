@@ -9,7 +9,7 @@ public class Explosion : MonoBehaviour {
     public float force = 10;
     public float delay = 1;
     public float radius = 5;
-    public float passThrough = 0.3f;
+    public float passThrough = 1;
     public float armDuration = 1;
     public LayerMask affected;
 
