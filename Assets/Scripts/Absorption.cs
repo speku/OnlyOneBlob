@@ -8,6 +8,7 @@ public class Absorption : MonoBehaviour {
 
     public float tinyScale = 0.01f;
     public float absorbPercentage = 1;
+    public float minimumRadius = 0.15f;
 
     Rigidbody2D rb;
     CircleCollider2D cc;
@@ -82,19 +83,32 @@ public class Absorption : MonoBehaviour {
 
     public List<Absorption> Explode(int parts, float passThroughDuration)
     {
-        var a = Area();
-        Util.Delay(() => Physics2D.IgnoreLayerCollision(lm, lm, true), passThroughDuration, () => Physics2D.IgnoreLayerCollision(lm, lm, false));
-        var newParts = Enumerable.Range(1, parts).Select((int _) => Create(transform.position, transform.rotation.z, a / parts)).ToList();
-        newParts.ForEach(ab => { ab.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(0, 180))); ab.transform.Translate(ab.transform.up * ab.Radius()); });
-        DestroyProper();
+        var newParts = new List<Absorption>();
+        var a = Area() / parts;
+        if (Radius(a) >= minimumRadius)
+        {
+            Util.Delay(() => Physics2D.IgnoreLayerCollision(lm, lm, true), passThroughDuration, () => Physics2D.IgnoreLayerCollision(lm, lm, false));
+            newParts = Enumerable.Range(1, parts).Select((int _) => Create(transform.position, transform.rotation.z, a)).ToList();
+            newParts.ForEach(ab => { ab.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(0, 180))); ab.transform.Translate(ab.transform.up * ab.Radius()); });
+            DestroyProper();
+            return newParts;
+        }
+        newParts.Add(this);
         return newParts;
+    }
+
+    public float Radius(float area)
+    {
+        return Mathf.Sqrt(area / Mathf.PI);
     }
 
 
 
     public void Scale(float newArea)
     {
-        transform.localScale = transform.localScale * (newArea / Area());
+        var a = Area();
+        if (a == 0) return;
+        transform.localScale = transform.localScale * (newArea / a);
         if (isPlayer)
         {
             em.RaiseAreaChanged();
