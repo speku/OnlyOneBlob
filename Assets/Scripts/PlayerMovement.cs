@@ -13,6 +13,12 @@ public class PlayerMovement : MonoBehaviour {
     public Transform explosionPosition;
 
     PowerUp.Type powerUp = PowerUp.Type.None;
+    [HideInInspector]
+    public Pull pull;
+    [HideInInspector]
+    public GravityBomb gravity;
+    [HideInInspector]
+    public Explosion explosion;
     public List<PowerUp> powerUps = new List<PowerUp>();
 
     private Rigidbody2D rb;
@@ -39,6 +45,15 @@ public class PlayerMovement : MonoBehaviour {
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             Equip(PowerUp.Type.GravityBomb);
+        }
+        switch (powerUp)
+        {
+            case PowerUp.Type.Pull:
+                if (Input.GetMouseButton(1)) pull.PullIn();
+                break;
+            case PowerUp.Type.Explosion | PowerUp.Type.GravityBomb:
+                explosion.GetComponent<PowerUp>().Place();
+                break;
         }
 
     }

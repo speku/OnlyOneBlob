@@ -18,15 +18,12 @@ public class Pull : MonoBehaviour {
         player = FindObjectOfType<PlayerMovement>();
     }
 
-    private IEnumerator PullIn()
+    public void PullIn()
     {
-        for (;;)
-        {
-            if (Active)
-                cone.affectedObjects.
-                    Where(o => Util.LineOfSight(gameObject, o)).
-                    Select(o => o.GetComponent<Rigidbody2D>()).ToList().
-                    ForEach(r => r.ApplyRelativeForce(transform.position, force, r.GetComponent<SpriteRenderer>().bounds.size.x, Time.deltaTime));
-        }
+        cone.affectedObjects.
+            Where(o => Util.LineOfSight(gameObject, o)).
+            Select(o => o.GetComponent<Rigidbody2D>()).ToList().
+            ForEach(r => r.ApplyRelativeForce(transform.position, force, r.GetComponent<SpriteRenderer>().bounds.size.x, Time.deltaTime));
     }
+
 }

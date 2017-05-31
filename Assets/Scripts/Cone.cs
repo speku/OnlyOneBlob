@@ -21,9 +21,9 @@ public class Cone : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D c)
     {
-        if (c.gameObject.layer == affected &&
-            c.gameObject.GetComponent<Rigidbody2D>() != null &&
+        if (c.gameObject.GetComponent<Rigidbody2D>() != null &&
             c.gameObject.GetComponent<SpriteRenderer>() != null) affectedObjects.Add(c.gameObject);
+
     }
 
 

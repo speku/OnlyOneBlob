@@ -47,12 +47,15 @@ public class PowerUp : MonoBehaviour {
         {
             case Type.GravityBomb:
                 transform.SetParent(player.gravityBombPosition.transform);
+                player.gravity = GetComponent<GravityBomb>();
                 break;
             case Type.Explosion:
                 transform.SetParent(player.explosionPosition.transform);
+                player.explosion = GetComponent<Explosion>();
                 break;
             case Type.Pull:
                 transform.SetParent(player.pullPosition.transform);
+                player.pull = GetComponent<Pull>();
                 break;
         }
         transform.localPosition = Vector3.zero;
@@ -89,6 +92,16 @@ public class PowerUp : MonoBehaviour {
                 break;
         }
         symbol.color = unselectedColor;
+    }
+
+    public void Place()
+    {
+        switch (type)
+        {
+            case Type.GravityBomb | Type.Explosion:
+                break;
+
+        }
     }
 
     //void Animate(bool start)
