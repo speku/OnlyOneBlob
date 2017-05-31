@@ -44,8 +44,9 @@ public static class Util {
 
     public static bool LineOfSight(GameObject start, GameObject end)
     {
-        if (start == null || end == null) return false;
-        return Physics2D.Linecast(start.transform.position, end.transform.position, LayerMask.NameToLayer("Obstacle")).collider == null;
+        return true;
+        //if (start == null || end == null) return false;
+        //return Physics2D.Linecast(start.transform.position, end.transform.position, LayerMask.NameToLayer("Obstacle")).collider == null;
     }
 
     public static void IgnoreCollisions(string layer1, string layer2)

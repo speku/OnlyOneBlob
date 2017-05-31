@@ -16,17 +16,18 @@ public class Lock : MonoBehaviour {
     public float unlockAnimationDuration;
     public Gate gate;
     public List<SpriteRenderer> activationStrip = new List<SpriteRenderer>();
-    public float unlockArea;
+    public float unlockArea = 1;
     public float stripAnimationDuration;
     public float stripAnimationDelay;
     public float indicatorUpdatePeriod;
     List<Absorption> blobs = new List<Absorption>();
     public List<Absorption> blobsToUnlock = new List<Absorption>();
+    bool unlocked = false;
 
 	void Start () {
         background.color = backgroundClosedColor;
         symbol.color = symbolClosedColor;
-        //StartCoroutine(IndicateProgress());
+        StartCoroutine(IndicateProgress());
 	}
 	
 
@@ -35,7 +36,7 @@ public class Lock : MonoBehaviour {
         var a = collision.GetComponent<Absorption>();
         if (a == null) return;
         blobs.Add(a);
-        if (a.Area() >= (blobsToUnlock.Count > 0 ? blobsToUnlock.Select(b => b.Area()).Sum() : unlockArea)) Unlock();
+        if (a.Area() >= UnlockArea()) Unlock();
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -44,15 +45,23 @@ public class Lock : MonoBehaviour {
         if (a == null) return;
         blobs.Remove(a);
     }
+    
+
+    float UnlockArea()
+    {
+        return blobsToUnlock.Count > 0 ? blobsToUnlock.Select(b => b.Area()).Sum() : unlockArea;
+    }
 
     IEnumerator IndicateProgress()
     {
-        for (;;)
+        while(!unlocked)
         {
-            var max = blobs.Select(b => b.Area()).DefaultIfEmpty(0).Max();
-            var p = max / unlockArea;
+            var max = blobs.Select(b => b.Area()).DefaultIfEmpty().Max();
+            var p = max / UnlockArea();
             background.color = Color.Lerp(backgroundClosedColor, backgroundOpenColor, p);
             symbol.color = Color.Lerp(symbolClosedColor, symbolOpenColor, p);
+            if (max >= UnlockArea()) Unlock();
+            yield return new WaitForSeconds(indicatorUpdatePeriod);
         }
 
     }
@@ -61,6 +70,8 @@ public class Lock : MonoBehaviour {
 
     void Unlock()
     {
+        if (unlocked) return;
+        unlocked = true;
         StartCoroutine(_Unlock());
     }
 
