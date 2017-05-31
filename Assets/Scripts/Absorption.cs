@@ -9,6 +9,7 @@ public class Absorption : MonoBehaviour {
     public float tinyScale = 0.01f;
     public float absorbPercentage = 1;
     public float minimumRadius = 0.15f;
+    public bool npcMerge = true;
 
     Rigidbody2D rb;
     CircleCollider2D cc;
@@ -136,6 +137,8 @@ public class Absorption : MonoBehaviour {
 
     public void Absorb(Absorption other, float percentage)
     {
+        if (!npcMerge && !(isPlayer || other.isPlayer)) return;
+
         var area = Area();
         var otherArea = other.Area();
 

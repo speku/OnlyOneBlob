@@ -7,22 +7,22 @@ public class Bar : MonoBehaviour {
     public Color raisedColor;
     public Color loweredColor;
     SpriteRenderer sr;
-    Collider2D collider;
+    Collider2D c;
 
 	void Start () {
         sr = GetComponent<SpriteRenderer>();
-        collider = GetComponent<Collider2D>();
+        c = GetComponent<Collider2D>();
         sr.color = raisedColor;
 	}
 
     public void Raise(float duration)
     {
-        Util.Lerp(sr, loweredColor, raisedColor, duration, () => collider.enabled = true);
+        Util.Lerp(sr, loweredColor, raisedColor, duration, () => c.enabled = true);
     }
 
     public void Lower(float duration)
     {
-        Util.Lerp(sr, raisedColor, loweredColor, duration, () => collider.enabled = false);
+        Util.Lerp(sr, raisedColor, loweredColor, duration, () => c.enabled = false);
     }
 	
 	
