@@ -63,4 +63,21 @@ public static class Util {
     {
         sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, alpha);
     }
+
+    public static void Lerp(SpriteRenderer renderer, Color from, Color to, float duration, Action finalAction = null)
+    {
+        sm.StartCoroutine(_Lerp(renderer, from, to, duration, finalAction));
+    }
+
+    public static IEnumerator _Lerp(SpriteRenderer renderer, Color from, Color to, float duration, Action finalAction = null)
+    {
+        var passedTime = 0f;
+        while (passedTime <= duration)
+        {
+            passedTime += Time.deltaTime;
+            renderer.color = Color.Lerp(from, to, passedTime / duration);
+            yield return null;
+        }
+        if (finalAction != null) finalAction();
+    }
 }
