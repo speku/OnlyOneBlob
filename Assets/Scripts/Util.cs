@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public static class Util {
 
     static Dummy sm;
+    static UnityEngine.Object sound;
 
     static ContactFilter2D filterLineOfSight;
 
@@ -16,6 +17,7 @@ public static class Util {
         o.AddComponent<Dummy>();
         sm = o.GetComponent<Dummy>();
         GameObject.DontDestroyOnLoad(sm.gameObject);
+        sound = GameObject.Instantiate(Resources.Load("SoundSource"));
     }
 
     public static void Delay(Action start, float delay, Action finish = null)
