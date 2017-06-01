@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 25b1be98b4baf214f941b4e5d3041e99
+timeCreated: 1496312354
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Enigmatic Unicode
+  fontNames:
+  - Enigmatic Unicode
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
