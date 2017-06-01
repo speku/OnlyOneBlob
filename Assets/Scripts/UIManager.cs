@@ -33,8 +33,8 @@ public class UIManager : MonoBehaviour {
             ShowLevels(false, false);
         }
     }
-	
-	void Update () {
+
+    void Update () {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             var b = !levels.activeSelf;

@@ -114,6 +114,8 @@ public class Absorption : MonoBehaviour {
         if (isPlayer)
         {
             em.RaiseAreaChanged();
+            player.powerUps.ForEach(p => p.ResetScale());
+            player.mousePointer.AdjustScale();
         } else
         {
             OnAreaChanged();

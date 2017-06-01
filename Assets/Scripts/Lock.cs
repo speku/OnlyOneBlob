@@ -56,7 +56,7 @@ public class Lock : MonoBehaviour {
     {
         while(!unlocked)
         {
-            var max = blobs.Select(b => b.Area()).DefaultIfEmpty().Max();
+            var max = blobs.Select(b => b.Area()).DefaultIfEmpty().Sum();
             var p = max / UnlockArea();
             background.color = Color.Lerp(backgroundClosedColor, backgroundOpenColor, p);
             symbol.color = Color.Lerp(symbolClosedColor, symbolOpenColor, p);

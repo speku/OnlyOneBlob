@@ -25,6 +25,8 @@ public class Explosion : MonoBehaviour {
 
     public void Arm()
     {
+        transform.SetParent(null);
+        transform.localScale = Vector3.one;
         Util.Delay(null, armDuration, () => { Explode(); Destroy(gameObject); });
         GetComponent<PowerUp>().Animate(armDuration);
     }

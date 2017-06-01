@@ -12,7 +12,8 @@ public class PlayerMovement : MonoBehaviour {
     public Transform pullPosition;
     public Transform explosionPosition;
     public float propulsion = 10;
-    Mouse mousePointer;
+    [HideInInspector]
+    public Mouse mousePointer;
 
     PowerUp.Type powerUp = PowerUp.Type.None;
     [HideInInspector]

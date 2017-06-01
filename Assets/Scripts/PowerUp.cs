@@ -123,4 +123,12 @@ public class PowerUp : MonoBehaviour {
         Pull,
         None
     }
+
+    public void ResetScale()
+    {
+        var parent = transform.parent;
+        transform.SetParent(null);
+        transform.localScale = Vector3.one;
+        transform.SetParent(parent);
+    }
 }

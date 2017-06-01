@@ -30,6 +30,8 @@ public class GravityBomb : MonoBehaviour {
 
     public void Arm()
     {
+        transform.SetParent(null);
+        transform.localScale = Vector3.one;
         Util.Delay(null, armDuration, Explode);
         GetComponent<PowerUp>().Animate(duration + 1);
     }
