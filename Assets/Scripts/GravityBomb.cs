@@ -31,5 +31,6 @@ public class GravityBomb : MonoBehaviour {
     public void Arm()
     {
         Util.Delay(null, armDuration, Explode);
+        GetComponent<PowerUp>().Animate(duration + 1);
     }
 }

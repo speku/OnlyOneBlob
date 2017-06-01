@@ -26,12 +26,13 @@ public class UIManager : MonoBehaviour {
             ShowLevels(false, true);
             OnGameStart();
             initialized = true;
-        } else
+        }
+        else
         {
             title.enabled = false;
             ShowLevels(false, false);
         }
-	}
+    }
 	
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Escape))

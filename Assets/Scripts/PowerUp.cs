@@ -109,23 +109,12 @@ public class PowerUp : MonoBehaviour {
         }
     }
 
-    //void Animate(bool start)
-    //{
-    //    animating = start;
-    //    if (start) StartCoroutine(Animation());
-    //}
+    public void Animate(float duration)
+    {
+        var until = Time.time + duration;
+        Util.While(() => Time.time <= until, () => Util.Lerp(symbol, selectedColor, Color.white, animationSpeed, () => Util.Lerp(symbol, Color.white, selectedColor, animationSpeed)), animationSpeed * 2);
+    }
 
-    //IEnumerator Animation()
-    //{
-    //    while (animating)
-    //    {
-    //        Util.Alpha(symbol, 1);
-    //        Util.Fade(symbol, animationSpeed);
-    //        yield return new WaitForSeconds(animationDelay);
-    //    }
-    //    Util.Alpha(symbol, 1);
-    //    yield break;
-    //}
 
     public enum Type
     {
@@ -134,6 +123,4 @@ public class PowerUp : MonoBehaviour {
         Pull,
         None
     }
-
-
 }

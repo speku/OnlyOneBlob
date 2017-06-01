@@ -26,6 +26,7 @@ public class Explosion : MonoBehaviour {
     public void Arm()
     {
         Util.Delay(null, armDuration, () => { Explode(); Destroy(gameObject); });
+        GetComponent<PowerUp>().Animate(armDuration);
     }
 
 
