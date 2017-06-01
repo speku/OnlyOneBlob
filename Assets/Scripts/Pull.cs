@@ -15,8 +15,8 @@ public class Pull : MonoBehaviour {
 
     private void Start()
     {
-        cone = FindObjectOfType<Cone>();
         player = FindObjectOfType<PlayerMovement>();
+        cone = player.cone;
     }
 
     public void PullIn()

@@ -35,14 +35,13 @@ public class Absorption : MonoBehaviour {
     {
         player = FindObjectOfType<PlayerMovement>();
         isPlayer = GetComponent<PlayerMovement>() != null;
+        sm = FindObjectOfType<SettingsManager>();
+        em = FindObjectOfType<EventManager>();
     }
 
 
     void Start () {
         Setup();
-
-        sm = FindObjectOfType<SettingsManager>();
-        em = FindObjectOfType<EventManager>();
 
         // event handling
         em.AreaChanged += OnAreaChanged;

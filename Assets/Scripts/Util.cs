@@ -6,13 +6,15 @@ using UnityEngine.UI;
 
 public static class Util {
 
-    static SettingsManager sm;
+    static Dummy sm;
 
     static ContactFilter2D filterLineOfSight;
 
     static Util()
     {
-        sm = GameObject.FindObjectOfType<SettingsManager>();
+        var o = new GameObject();
+        o.AddComponent<Dummy>();
+        sm = o.GetComponent<Dummy>();
         GameObject.DontDestroyOnLoad(sm.gameObject);
     }
 

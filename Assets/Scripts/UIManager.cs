@@ -30,7 +30,6 @@ public class UIManager : MonoBehaviour {
         {
             title.enabled = false;
             ShowLevels(false, false);
-
         }
 	}
 	
