@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityStandardAssets.ImageEffects;
 
 public class UIManager : MonoBehaviour {
 
@@ -20,18 +21,26 @@ public class UIManager : MonoBehaviour {
     static bool initialized = false;
 
 	void Start () {
-        OnGameStart();
-        initialized = true;
+        ShowLevels(false, true);
+        if (!initialized)
+        {
+            OnGameStart();
+            initialized = true;
+        }
 	}
 	
 	void Update () {
-		
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            var b = !levels.activeSelf;
+            ShowLevels(b, b);
+        }
 	}
 
     public void LoadScene(string scene)
     {
         SceneManager.LoadScene(scene);
-        canvas.gameObject.SetActive(false);
+        ShowLevels(false, false);
     }
 
 
@@ -43,18 +52,17 @@ public class UIManager : MonoBehaviour {
 
     public void OnGameStart()
     {
-        canvas.gameObject.SetActive(true);
-        Util.Delay(ShowTitle, showTitleDuration, () => ShowLevels(true));
+        Util.Delay(ShowTitle, showTitleDuration, () => ShowLevels(true, true));
     }
 
     public void OnGameStateChanged(string message, GameManager.GameState gs)
     {
-        canvas.gameObject.SetActive(true);
-        Util.Delay(() => ShowMessage(message, gs), showMessageDuration, () => ShowLevels(true));
+        Util.Delay(() => ShowMessage(message, gs), showMessageDuration, () => ShowLevels(true, true));
     }
 
     void ShowMessage(string msg, GameManager.GameState gs)
     {
+        Camera.main.GetComponent<BlurOptimized>().enabled = true;
         message.text = msg;
         Show(message, gs == GameManager.GameState.Won ? messageColorWon : messageColorLost, showMessageDuration);
     }
@@ -68,13 +76,15 @@ public class UIManager : MonoBehaviour {
     {
         var half = duration / 2;
         Util.Delay(
-            () => Util.LerpText(text, Util.Alpha(color, startAlpha), Util.Alpha(color, endAlpha), half), 
+            () => { text.enabled = true; Util.LerpText(text, Util.Alpha(color, startAlpha), Util.Alpha(color, endAlpha), half); }, 
             half, 
-            () => Util.LerpText(text, Util.Alpha(color, endAlpha), Util.Alpha(color, startAlpha), half));
+            () => {Util.LerpText(text, Util.Alpha(color, endAlpha), Util.Alpha(color, startAlpha), half); });
+        Util.Delay(null, duration, () => text.enabled = false);
     }
 
-    public void ShowLevels(bool show)
+    public void ShowLevels(bool show, bool blur)
     {
         levels.SetActive(show);
+        Camera.main.GetComponent<BlurOptimized>().enabled = blur;
     }
 }

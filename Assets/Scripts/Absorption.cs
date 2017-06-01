@@ -10,6 +10,7 @@ public class Absorption : MonoBehaviour {
     public float absorbPercentage = 1;
     public float minimumRadius = 0.15f;
     public bool npcMerge = true;
+    public float checkGameStateDelay = 1;
 
     Rigidbody2D rb;
     CircleCollider2D cc;
@@ -135,6 +136,20 @@ public class Absorption : MonoBehaviour {
         //em.AreaChanged -= OnAreaChanged;
     }
 
+    void CheckGameState()
+    {
+        Util.Delay(null, checkGameStateDelay, () =>
+         {
+             if (FindObjectsOfType<PlayerMovement>().Length == 0)
+             {
+                 em.RaiseGameStateChanged(GameManager.GameState.Lost);
+             } else if (FindObjectsOfType<Absorption>().Length == 1)
+             {
+                 em.RaiseGameStateChanged(GameManager.GameState.Won);
+             }
+         });
+    }
+
     public void Absorb(Absorption other, float percentage)
     {
         if (!npcMerge && !(isPlayer || other.isPlayer)) return;
@@ -160,6 +175,7 @@ public class Absorption : MonoBehaviour {
         other.Scale(otherNewArea);
         other.DestroyTiny();
         DestroyTiny();
+        CheckGameState();
     }
 
     public float Radius()
