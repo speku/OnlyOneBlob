@@ -13,6 +13,7 @@ public static class Util {
     static Util()
     {
         sm = GameObject.FindObjectOfType<SettingsManager>();
+        GameObject.DontDestroyOnLoad(sm.gameObject);
     }
 
     public static void Delay(Action start, float delay, Action finish = null)

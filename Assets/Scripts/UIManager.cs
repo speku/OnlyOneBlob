@@ -21,11 +21,16 @@ public class UIManager : MonoBehaviour {
     static bool initialized = false;
 
 	void Start () {
-        ShowLevels(false, true);
         if (!initialized)
         {
+            ShowLevels(false, true);
             OnGameStart();
             initialized = true;
+        } else
+        {
+            title.enabled = false;
+            ShowLevels(false, false);
+
         }
 	}
 	

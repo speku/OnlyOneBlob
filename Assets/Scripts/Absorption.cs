@@ -28,8 +28,6 @@ public class Absorption : MonoBehaviour {
         cc = GetComponent<CircleCollider2D>();
         sr = GetComponent<SpriteRenderer>();
         lm = LayerMask.NameToLayer("Absorption");
-        sm = FindObjectOfType<SettingsManager>();
-        em = FindObjectOfType<EventManager>();
     }
 
 
@@ -42,6 +40,9 @@ public class Absorption : MonoBehaviour {
 
     void Start () {
         Setup();
+
+        sm = FindObjectOfType<SettingsManager>();
+        em = FindObjectOfType<EventManager>();
 
         // event handling
         em.AreaChanged += OnAreaChanged;
@@ -122,12 +123,13 @@ public class Absorption : MonoBehaviour {
 
     public void DestroyTiny()
     {
-        if (transform.localScale.x < tinyScale) Destroy(gameObject);
+        if (transform.localScale.x < tinyScale) DestroyProper(); // Destroy(gameObject);
     }
 
     private void DestroyProper()
     {
         em.AreaChanged -= OnAreaChanged;
+        CheckGameState();
         Destroy(gameObject);
     }
 
@@ -138,17 +140,30 @@ public class Absorption : MonoBehaviour {
 
     void CheckGameState()
     {
-        Util.Delay(null, checkGameStateDelay, () =>
-         {
-             if (FindObjectsOfType<PlayerMovement>().Length == 0)
-             {
-                 em.RaiseGameStateChanged(GameManager.GameState.Lost);
-             } else if (FindObjectsOfType<Absorption>().Length == 1)
-             {
-                 em.RaiseGameStateChanged(GameManager.GameState.Won);
-             }
-         });
+       
+            if (isPlayer)
+            {
+                em.RaiseGameStateChanged(GameManager.GameState.Lost);
+            } else if (FindObjectsOfType<Absorption>().Length == 2)
+            {
+                em.RaiseGameStateChanged(GameManager.GameState.Won);
+            }
     }
+
+
+    //void CheckGameState()
+    //{
+    //    Util.Delay(null, checkGameStateDelay, () =>
+    //     {
+    //         if (FindObjectsOfType<PlayerMovement>().Length == 0)
+    //         {
+    //             em.RaiseGameStateChanged(GameManager.GameState.Lost);
+    //         } else if (FindObjectsOfType<Absorption>().Length == 1)
+    //         {
+    //             em.RaiseGameStateChanged(GameManager.GameState.Won);
+    //         }
+    //     });
+    //}
 
     public void Absorb(Absorption other, float percentage)
     {
@@ -175,7 +190,7 @@ public class Absorption : MonoBehaviour {
         other.Scale(otherNewArea);
         other.DestroyTiny();
         DestroyTiny();
-        CheckGameState();
+        //CheckGameState();
     }
 
     public float Radius()
